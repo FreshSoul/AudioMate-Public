@@ -1,4 +1,5 @@
-<img width="1254" height="1254" alt="AudioMate" src="https://github.com/user-attachments/assets/562de5ac-d4c0-483e-bc35-fa2528fed43c" />
+<img width="1254" height="1254" alt="AudioMate" src="https://github.com/user-attachments/assets/1030fde8-5d59-42a2-8bfc-4f073e7725a7" />
+
 # AudioMate-Public
 AudioMate-Public
 # AudioMate 用户使用指南
