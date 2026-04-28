@@ -1,4 +1,4 @@
-<img width="1152" height="882" alt="对话" src="https://github.com/user-attachments/assets/5e630705-6ad4-4f90-b356-308fa97c342d" />
+
 <img width="1254" height="1254" alt="AudioMate" src="https://github.com/user-attachments/assets/1030fde8-5d59-42a2-8bfc-4f073e7725a7" />
 
 # AudioMate-Public
