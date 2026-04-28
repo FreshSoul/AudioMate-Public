@@ -111,7 +111,8 @@ Agent Mode 适合需要改动项目数据的任务。它可以执行更完整的
 
 ### 使用知识库
 
-<img width="1152" height="882" alt="知识库" src="https://github.com/user-attachments/assets/0524709c-edb7-4797-a3e8-c73293bb5971" />
+<img width="1152" height="882" alt="知识库" src="https://github.com/user-attachments/assets/e10b8967-6ccf-4e62-b4f1-7de271c6c172" />
+
 
 
 1. 点击左侧 `Knowledge`。
