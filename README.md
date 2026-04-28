@@ -1,3 +1,4 @@
+<img width="1152" height="882" alt="对话" src="https://github.com/user-attachments/assets/5e630705-6ad4-4f90-b356-308fa97c342d" />
 <img width="1254" height="1254" alt="AudioMate" src="https://github.com/user-attachments/assets/1030fde8-5d59-42a2-8bfc-4f073e7725a7" />
 
 # AudioMate-Public
@@ -41,6 +42,8 @@ AudioMate 使用兼容 OpenAI 接口的模型服务。首次使用前需要在�
 
 
 ## 主界面说明
+
+<img width="1152" height="882" alt="对话" src="https://github.com/user-attachments/assets/1e0ecaad-2ef7-462b-94ae-1a80098c556e" />
 
 ### 左侧 Workspace
 
@@ -108,6 +111,9 @@ Agent Mode 适合需要改动项目数据的任务。它可以执行更完整的
 
 ### 使用知识库
 
+<img width="1152" height="882" alt="知识库" src="https://github.com/user-attachments/assets/0524709c-edb7-4797-a3e8-c73293bb5971" />
+
+
 1. 点击左侧 `Knowledge`。
 2. 点击 `新建知识库`，输入名称。
 3. 点击 `上传文档`，选择 `TXT`、`MD`、`PDF`、`Word`、`Excel`、`PPT` 等文件。
@@ -117,6 +123,10 @@ Agent Mode 适合需要改动项目数据的任务。它可以执行更完整的
 ```text
 参考项目音频规范，检查当前选中对象的命名和响度是否符合要求。
 ```
+
+
+<img width="1152" height="882" alt="设置" src="https://github.com/user-attachments/assets/245dd5bb-e01d-4f52-a77b-be479d83563a" />
+
 
 ### 使用 Skill
 
