@@ -169,6 +169,8 @@ Skill 用来定义 Agent 的专门能力和行为。适合把团队常用流程�
 Skill 可以来自本地目录，也可以来自 Market / Skill Hub。通过浏览器中的 Skill Hub 点击“一键 AudioMate”时，系统会通过 `audiomate://install-skill` 协议把 Skill 发送到当前 AudioMate 窗口。若 AudioMate 是被冷启动打开的，需要回到浏览器再点击一次导入按钮。
 
 好用的 Skill 往往不只是提示词，而是把“谁来做、按什么步骤检查、输出什么格式、什么操作必须先确认”写清楚。团队可以把一次成功的 QA、响度检查、命名审核或交付报告流程沉淀成 Skill，下一次直接复用。
+<img width="1152" height="882" alt="image" src="https://github.com/user-attachments/assets/f0b7383a-adef-4604-a1f0-b526499aca26" />
+
 
 ### 使用 Plugin
 
@@ -236,6 +238,8 @@ Agent 在需要时会看到当前已启用的 Plugin Tool，并可以在生成�
 ```text
 把 REAPER 当前选中轨道命名为 Dialogue Preview，音量设为 -6 dB，然后按当前渲染设置执行一次渲染。
 ```
+<img width="1152" height="882" alt="image" src="https://github.com/user-attachments/assets/4eab86f2-874e-4978-ba37-e8b528e12826" />
+
 
 ### 使用 MCP
 
@@ -278,6 +282,8 @@ MCP 配置用于连接外部工具或团队系统。当前版本支持多个 MCP
 ```
 
 历史配置如果没有 `enabled` 字段，升级后会默认关闭，避免旧配置在用户不知情的情况下自动接入外部系统。
+<img width="1152" height="882" alt="image" src="https://github.com/user-attachments/assets/38c5c347-5a15-418c-a5c2-22b91851054e" />
+
 
 ## 数据与安全建议
 
