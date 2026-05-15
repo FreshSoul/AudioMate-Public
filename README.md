@@ -337,6 +337,7 @@ MCP 配置用于连接外部工具或团队系统。当前版本支持多个 MCP
 - 确认已在 Market 的 Reaper Control 卡片中完成 `配置`。
 - 重启 REAPER 后，在 Action List 中运行过 `AudioMate/audiomate_reapy_bootstrap.py`。
 - 再让 AudioMate 调用 REAPER 连接检查；如果仍失败，检查 REAPER Python / reapy bridge 配置。
+- 已知BUG：Win11会出现配置后脚本调用闪退情况
 
 ### MCP 工具没有生效
 
