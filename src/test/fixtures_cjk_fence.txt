@@ -1,0 +1,364 @@
+text
+Actor-Mixer Hierarchy
+└── BOSS
+    └── BOSS_<BossName>
+        ├── Core
+        │   ├── Breath
+        │   ├── Foley
+        │   ├── Movement
+        │   ├── BodyImpact
+        │   └── AuraLoop
+        ├── VO
+        │   ├── Roar
+        │   ├── Phase
+        │   └── Death
+        ├── Skill
+        │   ├── Skill_<SkillName>_Anticipation
+        │   ├── Skill_<SkillName>_Charge
+        │   ├── Skill_<SkillName>_Cast
+        │   ├── Skill_<SkillName>_Projectile
+        │   ├── Skill_<SkillName>_Impact
+        │   └── Skill_<SkillName>_Aftermath
+        ├── Phase
+        │   ├── Phase01
+        │   ├── Phase02
+        │   └── Phase03
+        └── Death
+            ├── Death_Start
+            ├── Death_Impact
+            └── Death_Tail
+```
+
+### 3.2 Events Hierarchy
+
+推荐结构：
+
+```text
+Events
+└── BOSS
+    └── BOSS_<BossName>
+        ├── Phase
+        │   ├── Play_BOSS_<BossName>_Intro
+        │   ├── Play_BOSS_<BossName>_Phase01
+        │   ├── Play_BOSS_<BossName>_Phase02
+        │   ├── Play_BOSS_<BossName>_Phase03
+        │   └── Play_BOSS_<BossName>_Death
+        ├── Skill
+        │   ├── Play_BOSS_<BossName>_Skill_<SkillName>_Anticipation
+        │   ├── Play_BOSS_<BossName>_Skill_<SkillName>_Charge
+        │   ├── Stop_BOSS_<BossName>_Skill_<SkillName>_Charge
+        │   ├── Play_BOSS_<BossName>_Skill_<SkillName>_Cast
+        │   ├── Play_BOSS_<BossName>_Skill_<SkillName>_Impact
+        │   └── Stop_BOSS_<BossName>_Skill_<SkillName>_All
+        ├── Core
+        │   ├── Play_BOSS_<BossName>_Breath
+        │   ├── Stop_BOSS_<BossName>_Breath
+        │   ├── Play_BOSS_<BossName>_Move
+        │   └── Play_BOSS_<BossName>_Hit
+        └── System
+            ├── Stop_BOSS_<BossName>_All
+            └── Reset_BOSS_<BossName>_Mix
+```
+
+---
+
+## 4. 命名规范
+
+### 4.1 Event 命名
+
+| 类型 | 格式 | 示例 |
+|---|---|---|
+| 阶段进入 | `Play_BOSS_<BossName>_Phase<Index>` | `Play_BOSS_Dragon_Phase02` |
+| 技能预警 | `Play_BOSS_<BossName>_Skill_<SkillName>_Anticipation` | `Play_BOSS_Dragon_Skill_FireBreath_Anticipation` |
+| 技能蓄力循环 | `Play_BOSS_<BossName>_Skill_<SkillName>_Charge` | `Play_BOSS_Dragon_Skill_FireBreath_Charge` |
+| 停止蓄力 | `Stop_BOSS_<BossName>_Skill_<SkillName>_Charge` | `Stop_BOSS_Dragon_Skill_FireBreath_Charge` |
+| 技能命中 | `Play_BOSS_<BossName>_Skill_<SkillName>_Impact` | `Play_BOSS_Dragon_Skill_FireBreath_Impact` |
+| 死亡 | `Play_BOSS_<BossName>_Death` | `Play_BOSS_Dragon_Death` |
+| 全清理 | `Stop_BOSS_<BossName>_All` | `Stop_BOSS_Dragon_All` |
+
+### 4.2 对象命名
+
+| 类型 | 格式 | 示例 |
+|---|---|---|
+| 根容器 | `BOSS_<BossName>` | `BOSS_Dragon` |
+| 技能容器 | `BOSS_<BossName>_Skill_<SkillName>` | `BOSS_Dragon_Skill_FireBreath` |
+| 声音对象 | `SFX_BOSS_<BossName>_<Action>_<Layer/Index>` | `SFX_BOSS_Dragon_Roar_01` |
+| VO 对象 | `VO_BOSS_<BossName>_<Type>_<Index>` | `VO_BOSS_Dragon_Phase02_01` |
+| RTPC | `RTPC_BOSS_<Meaning>` | `RTPC_BOSS_HPPercent` |
+| State Group | `State_BOSS_<Meaning>` | `State_BOSS_Phase` |
+
+### 4.3 禁止项
+
+- 禁止使用 `New_Sound`、`BossSound01`、`test` 等不可追踪命名。
+- 禁止一个技能同时出现 `FireBreath`、`Fire_Breath`、`BreathFire` 多套拼法。
+- 禁止循环声音只有 Play 没有 Stop。
+- 禁止 BOSS 关键声音直接路由到总线根节点，必须进入明确分类 Bus。
+- 禁止把 BOSS 战玩法提示声完全交给 BGM 或全局压缩处理，关键提示必须有独立策略。
+
+---
+
+## 5. Bus 与 HDR 应用规范
+
+### 5.1 HDR 在 BOSS 战中的定位
+
+BOSS 战中 HDR 的目的不是简单“把 BOSS 声音做大”，而是建立动态优先级：
+
+1. 关键玩法信息优先：大招预警、转阶段、死亡、秒杀提示必须穿透混音。
+2. 非关键声音让位：环境、小怪、低优先级 Foley 在关键瞬间自动退让。
+3. 控制高峰密度：避免多个 Impact、VO、BGM、UI、环境同时顶到总线。
+4. 保持动态范围：让战斗高潮有冲击，同时避免长时间压扁或削波。
+
+### 5.2 推荐 HDR Bus 分层
+
+推荐结构：
+
+```text
+Main / Master Audio Bus
+└── HDR
+    ├── HDR_BOSS
+    │   ├── HDR_BOSS_VO
+    │   ├── HDR_BOSS_Skill
+    │   ├── HDR_BOSS_Impact
+    │   ├── HDR_BOSS_Core
+    │   └── HDR_BOSS_Loop
+    ├── HDR_Monster
+    ├── HDR_Player
+    ├── HDR_Weapon
+    ├── HDR_UI
+    └── HDR_Ambience
+```
+
+如果当前项目已经存在 `HDR_Monster`，建议：
+
+- 普通怪物继续进入 `HDR_Monster`。
+- BOSS 若规模较大，建议在其下或同级新增 `HDR_BOSS_*` 子 Bus。
+- 若暂不新增子 Bus，至少在对象或容器层定义：
+  - Voice Priority
+  - Playback Limit
+  - Virtual Voice Behavior
+  - Volume / HDR Envelope
+  - RTPC / State 混音逻辑
+
+### 5.3 BOSS 声音 HDR 优先级建议
+
+| 声音类型 | 建议优先级 | HDR 策略 |
+|---|---:|---|
+| BOSS 大招预警 / 秒杀提示 | 95–100 | 必须可辨识，可短时压制环境和小怪 |
+| BOSS 转阶段 Roar / Cutscene 关键声 | 90–100 | 允许短时成为混音主导 |
+| BOSS 大招 Impact / 砸地 / 爆炸 | 85–95 | 保留冲击，限制低频堆积 |
+| BOSS 技能 Cast / Projectile | 75–90 | 高于普通小怪，低于大招预警 |
+| BOSS 普攻 / 身体动作 | 60–80 | 距离近时明显，远距离弱化 |
+| BOSS Breath / Aura Loop | 40–60 | 用于存在感，不应长期占满 HDR |
+| 普通怪物攻击 | 40–65 | BOSS 关键动作时让位 |
+| 环境 Ambience | 20–40 | 高强度战斗时降低 |
+| UI 关键提示 | 80–100 | 与 BOSS 大招提示要错频或错时设计 |
+
+### 5.4 HDR 与 RTPC / State 联动
+
+建议建立：
+
+| 参数 / 状态 | 作用 |
+|---|---|
+| `State_BOSS_Phase` | 控制不同阶段的混音、音乐、技能层级 |
+| `State_BOSS_CombatIntensity` | 控制战斗密度、HDR 强度、环境让位 |
+| `RTPC_BOSS_HPPercent` | 血量越低可增强危险感、失真层、低频层 |
+| `RTPC_BOSS_Distance` | 控制近远距离细节与提示保留 |
+| `RTPC_BOSS_Threat` | 控制大招预警、蓄力、危险提示突出程度 |
+| `RTPC_BOSS_SkillCharge` | 控制蓄力 Loop 音高、滤波、音量、层级 |
+
+### 5.5 HDR 具体应用规则
+
+#### 大招预警
+
+- 进入 `HDR_BOSS_Skill` 或 `HDR_BOSS_VO`。
+- 优先级建议 `95–100`。
+- 允许短时降低：
+  - Ambience
+  - 普通怪物 Foley
+  - 低优先级武器尾音
+- 不建议完全压低：
+  - 关键 UI 提示
+  - 玩家受击反馈
+  - 剧情 VO
+
+#### 转阶段
+
+- 进入 `HDR_BOSS_VO` / `HDR_BOSS_Impact`。
+- 阶段切换前先设置 `State_BOSS_Phase`，再触发转阶段 Event。
+- Roar / Impact / 音乐 Stinger 需要避让：
+  - Roar 与 Music Stinger 不要完全同频挤占。
+  - Impact 低频峰值需要与 BGM Bass 分工。
+
+#### 死亡
+
+- 死亡事件应包含：
+  - `Play_BOSS_<BossName>_Death`
+  - `Stop_BOSS_<BossName>_All`
+  - 清理 Aura / Breath / Skill Loop
+  - 切换 `State_BOSS_Phase = Death`
+- Death Impact 可高优先级，但 Tail 不应长期占满 HDR。
+
+#### Loop 类声音
+
+- Breath、Aura、Charge、AOE、Laser、Beam 必须有 Stop 规则。
+- Loop 优先级不应过高，避免遮蔽战斗信息。
+- Loop 进入虚拟声部时要定义恢复行为，避免重新激活时相位或音量突变。
+
+---
+
+## 6. 程序接入字段规范
+
+飞书或配置表建议包含以下字段：
+
+| 字段 | 必填 | 示例 | 说明 |
+|---|---|---|---|
+| `BossName` | 是 | `Dragon` | BOSS 唯一名 |
+| `Phase` | 是 | `Phase02` | 所属阶段 |
+| `SkillName` | 否 | `FireBreath` | 技能名 |
+| `EventName` | 是 | `Play_BOSS_Dragon_Skill_FireBreath_Cast` | Wwise Event |
+| `TriggerTiming` | 是 | `CastStart` / `Impact` / `PhaseEnter` | 触发时机 |
+| `GameObject` | 是 | `BossActor` / `Projectile` / `WorldPosition` | 绑定对象 |
+| `StopEvent` | Loop 必填 | `Stop_BOSS_Dragon_Skill_FireBreath_Charge` | 停止事件 |
+| `StopRule` | Loop 必填 | `OnCastEnd` / `OnInterrupted` / `OnDeath` | 停止条件 |
+| `StateGroup` | 否 | `State_BOSS_Phase` | 关联状态组 |
+| `StateValue` | 否 | `Phase02` | 状态值 |
+| `RTPC` | 否 | `RTPC_BOSS_SkillCharge` | 关联参数 |
+| `HDRRoute` | 是 | `HDR_BOSS_Skill` | 路由目标 |
+| `Priority` | 是 | `High` | 玩法优先级 |
+| `SoundBank` | 是 | `SB_BOSS_Dragon` | 所属 SoundBank |
+| `QAStatus` | 是 | `Todo` / `Integrated` / `Verified` | 测试状态 |
+| `Owner` | 否 | `Audio / Design / Code` | 责任人 |
+
+---
+
+## 7. SoundBank 规范
+
+推荐：
+
+```text
+SB_BOSS_<BossName>
+SB_BOSS_<BossName>_VO
+SB_BOSS_<BossName>_Music
+SB_BOSS_Common
+```
+
+规则：
+
+1. 当前关卡只加载当前 BOSS 专属 Bank 与 Common Bank。
+2. 多语言 VO 单独拆分，避免全部语言随 BOSS 主 Bank 加载。
+3. BOSS 死亡或退出副本后卸载专属 Bank。
+4. Common Bank 只放通用资产，不要塞入具体 BOSS 独占技能。
+5. 所有 Event 必须能追踪到所属 SoundBank。
+
+---
+
+## 8. 性能与并发规范
+
+| 类型 | 建议 |
+|---|---|
+| 普攻 Layer | 1–3 层 |
+| 大招 Impact Layer | 3–6 层，但低频层必须受控 |
+| Breath / Aura Loop | 1 个主循环 + 可选距离层 |
+| Projectile | 按同屏数量设置播放限制 |
+| 小怪同类叫声 | 必须设置播放限制或虚拟化 |
+| BOSS VO | 高优先级，避免被普通声音虚拟化 |
+| 长尾 Reverb / Debris | 战斗高峰时可缩短或降低 |
+| UI / 玩家受击 | 不应被 BOSS HDR 完全吞没 |
+
+---
+
+## 9. QA 验收清单
+
+### 9.1 Wwise 编辑器检查
+
+- [ ] BOSS Event 命名符合规范。
+- [ ] 所有 Loop 有 Stop Event 或明确停止 Action。
+- [ ] BOSS 关键声音进入 HDR_BOSS / HDR_Monster 等指定 Bus。
+- [ ] 普通怪物、环境、UI、BGM 不混入 BOSS 专用 Bus。
+- [ ] BOSS Phase State 可在 Profiler 中观察。
+- [ ] BOSS RTPC 可在 Profiler 中连续变化。
+- [ ] 死亡后无 Breath / Aura / Charge / Skill Loop 残留。
+- [ ] SoundBank 包含完整 Event 和 Media。
+- [ ] 无孤立 Sound 未被 Event 引用。
+
+### 9.2 Profiler 检查
+
+- [ ] 无 `Event not found`。
+- [ ] 无 `Action target not found`。
+- [ ] 无明显 Voice Starvation。
+- [ ] 无 Streaming Starvation。
+- [ ] BOSS 战高峰 Voice 数不超过项目预算。
+- [ ] Master / Main Audio Bus 不长时间贴近 0 dB。
+- [ ] HDR_Monster / HDR_BOSS 不被低优先级 Loop 长时间占满。
+- [ ] 大招预警、转阶段、死亡声音在 BGM 和战斗噪声中仍可辨识。
+- [ ] BOSS 死亡后 3–5 秒内混音状态恢复正常。
+
+### 9.3 实机检查
+
+- [ ] 近距离、远距离、镜头外 BOSS 的提示策略正确。
+- [ ] Phase01 / Phase02 / Phase03 之间混音差异明确。
+- [ ] 打断技能时 Charge / Loop 能正确停止。
+- [ ] 反复进出战斗不会残留状态、RTPC 或循环声。
+- [ ] 多个怪物和 BOSS 同屏时，BOSS 关键动作仍清晰。
+- [ ] 低端设备或高负载场景无明显丢声。
+
+---
+
+## 10. 当前工程改进建议
+
+基于本次扫描结果：
+
+1. 如果 `HDR_Monster` 已经是当前怪物 HDR 汇总 Bus，建议明确它的职责边界：  
+   - 普通怪物：进入 `HDR_Monster`。  
+   - BOSS：建议拆到 `HDR_BOSS` 或 `HDR_Monster/HDR_BOSS_*` 下级。  
+
+2. 对 BOSS 至少建立四类 HDR 路由：  
+   - `HDR_BOSS_VO`：Roar、转阶段、剧情台词。  
+   - `HDR_BOSS_Skill`：蓄力、释放、Projectile、危险提示。  
+   - `HDR_BOSS_Impact`：砸地、爆炸、死亡冲击。  
+   - `HDR_BOSS_Core`：呼吸、存在感、身体动作。  
+
+3. 飞书表格建议新增或确认以下字段：  
+   - `EventName`  
+   - `TriggerTiming`  
+   - `StopEvent`  
+   - `StopRule`  
+   - `HDRRoute`  
+   - `Priority`  
+   - `StateGroup` / `StateValue`  
+   - `RTPC`  
+   - `SoundBank`  
+   - `QAStatus`  
+
+4. 如果当前 BOSS 相关对象命名仍使用 Monster / Enemy 通用结构，应在文档中明确：  
+   - 哪些对象是普通怪物共用。  
+   - 哪些对象是 BOSS 专属。  
+   - 哪些 Event 可以复用，哪些 Event 必须独立。  
+
+5. HDR 调试必须配合 Profiler 截图或记录：  
+   - BOSS 大招前 3 秒。  
+   - BOSS 大招释放瞬间。  
+   - 转阶段瞬间。  
+   - 死亡清理后 3–5 秒。  
+
+---
+
+## 11. 可直接放进项目 Wiki 的结论
+
+BOSS 战音频开发必须以 `Event 接入表 + Wwise 层级 + HDR 路由 + QA 验收` 四件套为交付标准。  
+HDR 的核心职责是让 BOSS 的关键玩法信息在复杂战斗混音中保持可辨识，而不是单纯提升响度。  
+所有 BOSS 关键 Event 必须写明触发时机、停止规则、GameObject、State/RTPC 依赖、SoundBank 和 HDRRoute。  
+所有循环类 BOSS 声音必须可被死亡、切阶段、技能打断和退出战斗统一清理。
+"""
+
+report["doc"] = doc
+
+print(doc)
+
+print("\n===== Wwise 查询警告 =====")
+if report["wwise"]["warnings"]:
+    for w in report["wwise"]["warnings"]:
+        print("- " + w)
+else:
+    print("无。")
+```

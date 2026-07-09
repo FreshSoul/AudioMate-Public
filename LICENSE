@@ -1,0 +1,20 @@
+SPDX-License-Identifier: GPL-3.0-only
+
+AudioMate is licensed under the GNU General Public License, version 3 only
+(GPL-3.0-only).
+
+Copyright (C) 2026 AudioMate contributors
+
+You may copy, distribute, and modify this program under the terms of the GNU
+General Public License version 3, as published by the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+The canonical GPL-3.0 license text is available from:
+
+https://www.gnu.org/licenses/gpl-3.0.html
+
+Binary releases and redistributed source archives should include the full
+GPL-3.0-only license text together with this notice.

@@ -1,0 +1,141 @@
+{
+  "id": "reaper-control",
+  "name": "Reaper Control",
+  "version": "0.4.4",
+  "description": "通过 AudioMate 的 ReaScript bridge 控制 Cockos REAPER。",
+  "entry": "plugin.py",
+  "tools": [
+    {
+      "name": "check_connection",
+      "description": "检查 REAPER ReaScript bridge 是否可用并响应正常。",
+      "function": "check_connection",
+      "read_only": true
+    },
+    {
+      "name": "transport",
+      "description": "控制 REAPER 播放状态：播放、暂停、停止、录音、循环、光标位置、跳转开始和结尾。",
+      "function": "transport",
+      "read_only": false
+    },
+    {
+      "name": "project_info",
+      "description": "读取当前 REAPER 工程状态、路径、光标位置、播放状态、tempo、拍号和轨道数量。",
+      "function": "project_info",
+      "read_only": true
+    },
+    {
+      "name": "list_tracks",
+      "description": "列出 REAPER 轨道名称、音量、声像、静音、独奏、录音准备、选中状态，以及可选 FX 数量。",
+      "function": "list_tracks",
+      "read_only": true
+    },
+    {
+      "name": "set_track",
+      "description": "按索引或名称修改 REAPER 轨道：静音、独奏、音量、声像、录音准备、选中、名称和颜色。",
+      "function": "set_track",
+      "read_only": false
+    },
+    {
+      "name": "execute_action",
+      "description": "通过数字 command id 或 named command id 执行 REAPER Action。",
+      "function": "execute_action",
+      "read_only": false
+    },
+    {
+      "name": "render",
+      "description": "当提供 directory/output_path、pattern、bounds、render_mode、normalize_target_db 或 format 等字段时，先配置 REAPER 渲染设置再触发渲染；未提供设置字段时，使用当前工程渲染设置直接渲染。",
+      "function": "render",
+      "read_only": false
+    },
+    {
+      "name": "markers_regions",
+      "description": "列出 REAPER 工程中的 markers 和 regions。",
+      "function": "markers_regions",
+      "read_only": true
+    },
+    {
+      "name": "write_midi",
+      "description": "在 REAPER 轨道上创建 MIDI item，并写入默认旋律或指定 MIDI 音符。",
+      "function": "write_midi",
+      "read_only": false
+    },
+    {
+      "name": "create_track",
+      "description": "在末尾或指定索引创建 REAPER 轨道，并可设置名称、选中、录音准备、颜色或添加 FX。",
+      "function": "create_track",
+      "read_only": false
+    },
+    {
+      "name": "media_items",
+      "description": "列出、创建、更新、选择或删除 REAPER 轨道上的 media items。",
+      "function": "media_items",
+      "read_only": false
+    },
+    {
+      "name": "takes",
+      "description": "读取和修改 active takes、take 名称、source 名称和 MIDI 音符摘要。",
+      "function": "takes",
+      "read_only": false
+    },
+    {
+      "name": "track_fx",
+      "description": "列出、添加、启用、旁路、检查和编辑轨道 FX 及 FX 参数。",
+      "function": "track_fx",
+      "read_only": false
+    },
+    {
+      "name": "project_markers",
+      "description": "列出、添加、更新或删除工程 markers 和 regions。",
+      "function": "project_markers",
+      "read_only": false
+    },
+    {
+      "name": "project_settings",
+      "description": "读取和设置 REAPER 工程设置。使用 action=set_render_settings 可设置渲染目录/output_path、pattern、bounds、render_mode、format、响度归一化、尾巴、抖动、淡入淡出、补白、裁切和 metadata，且不触发渲染。",
+      "function": "project_settings",
+      "read_only": false
+    },
+    {
+      "name": "ext_state",
+      "description": "读取、写入、删除和枚举 REAPER 全局 ExtState 与工程 ProjExtState。",
+      "function": "ext_state",
+      "read_only": false
+    },
+    {
+      "name": "track_routing",
+      "description": "列出、创建、更新或移除轨道 sends、receives 和 hardware outputs。",
+      "function": "track_routing",
+      "read_only": false
+    },
+    {
+      "name": "envelopes",
+      "description": "列出轨道 envelopes，并检查、插入、更新、删除或排序 envelope 点和 automation item 点。",
+      "function": "envelopes",
+      "read_only": false
+    },
+    {
+      "name": "midi_events",
+      "description": "检查和编辑 MIDI take 中的 notes、CC 事件、text/sysex 事件、hash 和选中状态。",
+      "function": "midi_events",
+      "read_only": false
+    },
+    {
+      "name": "media_sources",
+      "description": "读取 takes 的 media source 文件、类型、长度、采样率、声道数、section 和 metadata。",
+      "function": "media_sources",
+      "read_only": true
+    },
+    {
+      "name": "reaper_session",
+      "description": "执行 undo/redo、undo block 调用、UI refresh 控制、arrange 更新和 dirty 标记等工具操作。",
+      "function": "reaper_session",
+      "read_only": false
+    },
+    {
+      "name": "call_api",
+      "description": "用 JSON 参数按名称调用允许的低层 ReaScript API 函数，用于补充其它工具尚未封装的进阶操作。",
+      "function": "call_api",
+      "read_only": false
+    }
+  ]
+}

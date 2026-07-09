@@ -1,0 +1,1011 @@
+[
+  {
+    "id": "create_actor_mixer",
+    "category": "waapi_action",
+    "user_query": "在 Default Work Unit 下新建一个名为 Combat 的 Actor-Mixer",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "ak.wwise.core.object.create|waapi.create_object|waapi.create",
+      "Actor-Mixer Hierarchy|Containers|resolve_hierarchy_root"
+    ],
+    "forbidden_signals": [
+      "ak.wwise.core.object.addActorMixer"
+    ],
+    "notes": "Tests basic create + correct API name (not invented)."
+  },
+  {
+    "id": "rename_selected",
+    "category": "waapi_action",
+    "user_query": "把当前选中的对象重命名为 Footstep_Concrete_01",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "ak.wwise.ui.getSelectedObjects|waapi.get_selected_objects",
+      "ak.wwise.core.object.setName|set_property|setName"
+    ],
+    "forbidden_signals": [],
+    "notes": "Selection-first pattern."
+  },
+  {
+    "id": "import_sfx_to_selection",
+    "category": "waapi_action",
+    "user_query": "把这个 wav 文件导入到当前选中的 Actor-Mixer 下：C:/audio/punch.wav",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "import_audio_files_to_selected_wwise"
+    ],
+    "forbidden_signals": [
+      "ak.wwise.core.audio.import"
+    ],
+    "notes": "Should prefer the helper over hand-written import payload."
+  },
+  {
+    "id": "list_state_groups",
+    "category": "waapi_readonly",
+    "user_query": "列出工程里所有的 State Group",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "ak.wwise.core.object.get|waapi.get_objects|waapi.get",
+      "State Group|StateGroup"
+    ],
+    "forbidden_signals": [],
+    "notes": "Read-only query."
+  },
+  {
+    "id": "set_volume_db",
+    "category": "waapi_action",
+    "user_query": "把选中的 Sound 对象 Volume 设为 -6 dB",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "Volume",
+      "set_property|ak.wwise.core.object.set"
+    ],
+    "forbidden_signals": [],
+    "notes": "Property write — helper ``set_property`` OR native ``ak.wwise.core.object.set`` both acceptable."
+  },
+  {
+    "id": "generate_soundbanks",
+    "category": "waapi_action",
+    "user_query": "生成所有 SoundBank",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "ak.wwise.core.soundbank.generate|waapi.soundbank_generate|soundbank_generate"
+    ],
+    "forbidden_signals": [],
+    "notes": "Banking action — accept native API or the structured tool."
+  },
+  {
+    "id": "loudness_selection",
+    "category": "project_source_audio",
+    "user_query": "分析当前选中对象的 source 文件响度",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "analyze_selected_source_files_loudness|waapi.loudness_analyze_selected"
+    ],
+    "forbidden_signals": [
+      "ak.wwise.core.audio.import"
+    ],
+    "notes": "Should use dedicated loudness helper (native or structured)."
+  },
+  {
+    "id": "switch_routing",
+    "category": "waapi_action",
+    "user_query": "把选中的 Sound 路由到 Master Audio Bus 下的 SFX Bus",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "OutputBus",
+      "ak.wwise.core.object.setReference|ak.wwise.core.object.set|waapi.set_reference|waapi.set_object_output_bus|set_reference"
+    ],
+    "forbidden_signals": [
+      "ak.wwise.core.object.setRTPCBinding"
+    ],
+    "notes": "Output bus reassignment — accept native, structured, or set_object_output_bus helper."
+  },
+  {
+    "id": "set_state_group",
+    "category": "waapi_action",
+    "user_query": "为选中对象绑定 Combat 这个 State Group",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "Combat",
+      "ak.wwise.core.object.setStateGroups|StateGroups|@StateGroups"
+    ],
+    "forbidden_signals": [
+      "ak.wwise.core.object.addStateGroup",
+      "ak.wwise.core.object.setStatePropValue"
+    ],
+    "notes": "State group binding — accept setStateGroups or property-set on @StateGroups."
+  },
+  {
+    "id": "explain_voice_pitch",
+    "category": "waapi_concept",
+    "user_query": "Wwise 里的 Voice Pitch 和 Voice Volume 有什么区别？",
+    "expected_tool": null,
+    "expected_signals": [
+      "Voice Pitch",
+      "Voice Volume"
+    ],
+    "forbidden_signals": [],
+    "notes": "Pure explanation — should NOT generate code."
+  },
+  {
+    "id": "ambiguous_analyze",
+    "category": "ambiguous",
+    "user_query": "分析一下",
+    "expected_tool": null,
+    "expected_signals": [
+      "[INTENT_CLARIFY]|哪一类|哪个|想分析什么|想让我分析|具体一点|请明确|是指|还是"
+    ],
+    "forbidden_signals": [
+      "```python_waapi"
+    ],
+    "notes": "Must clarify (INTENT_CLARIFY block OR a clarifying question listing options) and NOT execute. Forbid generating a code block — that means it guessed instead of asking."
+  },
+  {
+    "id": "chitchat",
+    "category": "chitchat",
+    "user_query": "你好，最近怎么样？",
+    "expected_tool": null,
+    "expected_signals": [],
+    "forbidden_signals": [
+      "ak.wwise.core",
+      "python_waapi"
+    ],
+    "notes": "Pure chat — no WAAPI calls."
+  },
+  {
+    "id": "lookup_unknown_api",
+    "category": "self_correction",
+    "user_query": "怎么用 WAAPI 设置某个对象的 Attenuation 曲线？",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "lookup_waapi_doc|search_waapi_functions|getSchema|get_schema|getPropertyAndReferenceNames|setAttenuationCurve",
+      "ak.wwise.core.object.setAttenuationCurve|setAttenuationCurve|set_attenuation_curve"
+    ],
+    "forbidden_signals": [],
+    "notes": "Should look up docs first when uncertain — accept any verification helper (doc lookup / schema / property names) OR directly naming the correct setAttenuationCurve API."
+  },
+  {
+    "id": "list_events",
+    "category": "waapi_readonly",
+    "user_query": "列出当前工程的所有 Event",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "ak.wwise.core.object.get|waapi.get_objects|waapi.get",
+      "Event"
+    ],
+    "forbidden_signals": [],
+    "notes": "WAQL or filter by type=Event — native API or structured wrapper."
+  },
+  {
+    "id": "duplicate_object",
+    "category": "waapi_action",
+    "user_query": "把选中的对象在原位置复制一份（只是简单复制，不用迁移引用）",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "ak.wwise.core.object.copy|ak.wwise.ui.commands.execute"
+    ],
+    "forbidden_signals": [],
+    "notes": "Object copy — direct API or UI command Duplicate both acceptable. Query is explicit to avoid INTENT_CLARIFY."
+  },
+  {
+    "id": "set_rtpc_curve_point",
+    "category": "waapi_action",
+    "user_query": "为选中的 Sound 添加一个 RTPC，绑定到 Volume，曲线添加 (0, -96) 和 (100, 0) 两个点",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "Volume",
+      "ak.wwise.core.object.setRTPC|RTPC|setObjectRtpc"
+    ],
+    "forbidden_signals": [
+      "ak.wwise.core.object.setRTPCBinding"
+    ],
+    "notes": "RTPC curve — accept setRTPC, setObjectRtpc helper, or RTPC property writes; reject the explicitly-WRONG setRTPCBinding."
+  },
+  {
+    "id": "find_referencers",
+    "category": "waapi_readonly",
+    "user_query": "哪些 Event 引用了选中的 Sound？",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "referencesTo",
+      "Event"
+    ],
+    "forbidden_signals": [],
+    "notes": "Reverse-reference query."
+  },
+  {
+    "id": "create_random_container",
+    "category": "waapi_action",
+    "user_query": "把选中的几个 Sound 移入一个新建的 Random Container（直接把它们移进去，不要保留旧位置）",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "Random Container"
+    ],
+    "forbidden_signals": [],
+    "notes": "Container creation + reparenting. Query is explicit to avoid INTENT_CLARIFY on 'create vs reparent'."
+  },
+  {
+    "id": "save_project",
+    "category": "waapi_action",
+    "user_query": "保存工程",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "ak.wwise.core.project.save|waapi.project_save|project_save"
+    ],
+    "forbidden_signals": [],
+    "notes": "Single API call — native or structured."
+  },
+  {
+    "id": "disconnected_action",
+    "category": "disconnected",
+    "user_query": "新建一个 Actor-Mixer 叫 Combat",
+    "ctx": {
+      "waapi_connected": false
+    },
+    "expected_tool": null,
+    "expected_signals": [
+      "Connect|连接|连上|没连|未连|先连"
+    ],
+    "forbidden_signals": [
+      "ak.wwise.core.object.create"
+    ],
+    "notes": "Should NOT generate code while disconnected."
+  },
+  {
+    "id": "loudness_local_file",
+    "category": "loudness_analysis",
+    "user_query": "分析一下 C:/audio/punch.wav 的响度",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "analyze_audio_file"
+    ],
+    "forbidden_signals": [
+      "analyze_directory_loudness"
+    ],
+    "notes": "Single local file → analyze_audio_file, not directory variant."
+  },
+  {
+    "id": "loudness_local_directory",
+    "category": "loudness_analysis",
+    "user_query": "把 D:/sfx/ambient 这个文件夹里所有音频的响度都分析一遍",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "analyze_directory_loudness",
+      "recursive"
+    ],
+    "forbidden_signals": [
+      "ak.wwise.core.audio.import"
+    ],
+    "notes": "Directory loudness sweep — must use the dedicated helper, no hand-enumeration."
+  },
+  {
+    "id": "loudness_project_wide",
+    "category": "project_source_audio",
+    "user_query": "整个工程所有 source 文件的响度分析",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "analyze_project_source_files_loudness"
+    ],
+    "forbidden_signals": [
+      "analyze_selected_source_files_loudness"
+    ],
+    "notes": "Project-wide loudness — distinct from selection-scoped."
+  },
+  {
+    "id": "loudness_full_route",
+    "category": "project_source_audio",
+    "user_query": "评估选中对象走完整路由链路（包括 Bus gain）之后的响度",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "analyze_selected_sources_full_route_loudness"
+    ],
+    "forbidden_signals": [],
+    "notes": "Full-route loudness — only this helper accounts for bus gain chain."
+  },
+  {
+    "id": "normalize_audio",
+    "category": "loudness_analysis",
+    "user_query": "把 C:/audio/dialogue.wav 归一化到 -16 LUFS",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "normalize_audio_loudness",
+      "-16"
+    ],
+    "forbidden_signals": [],
+    "notes": "Loudness normalization — write op; original is backed up by default."
+  },
+  {
+    "id": "normalize_then_import",
+    "category": "loudness_analysis",
+    "user_query": "把 D:/raw/footsteps 文件夹里的音频统一归一化到 -18 LUFS，然后导入选中的 Actor-Mixer",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "normalize_audio_loudness",
+      "import_audio_files_to_selected_wwise"
+    ],
+    "forbidden_signals": [
+      "ak.wwise.core.audio.import"
+    ],
+    "notes": "Multi-step chain: normalize each → import helper. Must prefer import_audio_files_to_selected_wwise."
+  },
+  {
+    "id": "ask_mode_normalize_blocked",
+    "category": "ask_mode",
+    "user_query": "把 C:/audio/dialogue.wav 归一化到 -16 LUFS",
+    "ctx": {
+      "mode": "Ask Mode"
+    },
+    "expected_tool": null,
+    "expected_signals": [
+      "Ask Mode|只读|无法执行|不能执行|拒绝|blocked",
+      "Agent Mode|切换"
+    ],
+    "forbidden_signals": [
+      "```python_waapi"
+    ],
+    "notes": "Ask Mode blocks write ops. Forbid actually GENERATING a code block — mentioning the function name in plain text is allowed (model often demonstrates what would run after switching to Agent Mode)."
+  },
+  {
+    "id": "read_local_file",
+    "category": "local_file_access",
+    "user_query": "读一下 E:/design_notes/sfx_spec.md 里写了什么",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "read_user_file"
+    ],
+    "forbidden_signals": [],
+    "notes": "Local file read — the documented helper."
+  },
+  {
+    "id": "list_local_directory",
+    "category": "local_file_access",
+    "user_query": "看看 D:/wwise_projects/MyGame 下有什么文件",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "list_local_directory"
+    ],
+    "forbidden_signals": [
+      "os.listdir"
+    ],
+    "notes": "Directory listing — prefer the wrapper over raw os.listdir."
+  },
+  {
+    "id": "fetch_webpage",
+    "category": "web_access",
+    "user_query": "去 https://www.audiokinetic.com/library/edge/?source=Help&id=ak_wwise_core_object_get 看看这个文档怎么说",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "fetch_webpage"
+    ],
+    "forbidden_signals": [
+      "urllib",
+      "requests.get"
+    ],
+    "notes": "External web fetch — must use the sandboxed wrapper, not raw HTTP libs."
+  },
+  {
+    "id": "lookup_waapi_doc_explicit",
+    "category": "self_correction",
+    "user_query": "先帮我看下 ak.wwise.core.audio.import 这个接口的参数怎么传",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "lookup_waapi_doc|search_waapi_functions|getSchema|get_schema|ak.wwise.waapi.getSchema",
+      "ak.wwise.core.audio.import|import_audio_files_to_selected_wwise"
+    ],
+    "forbidden_signals": [],
+    "notes": "Explicit doc lookup request — accept doc lookup OR schema introspection (getSchema is equivalent verification)."
+  },
+  {
+    "id": "search_waapi_functions",
+    "category": "self_correction",
+    "user_query": "WAAPI 里和 sound bank 相关的函数都有哪些？",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "search_waapi_functions|lookup_waapi_doc|getSchema|get_schema|getTopology|getFunctions"
+    ],
+    "forbidden_signals": [],
+    "notes": "Keyword search — accept any discovery helper. Model may also directly enumerate ak.wwise.core.soundbank.* if confident, but a verification call is preferred."
+  },
+  {
+    "id": "call_mcp_tool",
+    "category": "mcp",
+    "user_query": "用 MCP 调一下 search_web 工具搜索 \"FMOD vs Wwise comparison\"",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "call_mcp_tool",
+      "search_web"
+    ],
+    "forbidden_signals": [],
+    "notes": "Explicit MCP tool invocation."
+  },
+  {
+    "id": "read_feishu_doc",
+    "category": "mcp",
+    "user_query": "把这个飞书文档的内容读出来：https://example.feishu.cn/wiki/abc123",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "read_feishu_doc"
+    ],
+    "forbidden_signals": [
+      "fetch_webpage"
+    ],
+    "notes": "Feishu/Lark links must route through the dedicated MCP helper, not raw fetch."
+  },
+  {
+    "id": "write_skill_files",
+    "category": "file_write",
+    "user_query": "帮我生成一个新 Skill 的目录结构，包含 manifest.json、main.py、README.md 三个文件，放到 D:/my_skill 下",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "write_file_tree"
+    ],
+    "forbidden_signals": [
+      "open(",
+      "with open"
+    ],
+    "notes": "Multi-file generation must use the staged write helper for user confirmation."
+  },
+  {
+    "id": "describe_local_path",
+    "category": "local_file_access",
+    "user_query": "我拖给你的这个东西是文件还是文件夹？路径是 C:/audio_assets",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "describe_local_path"
+    ],
+    "forbidden_signals": [
+      "os.path.isdir",
+      "os.path.isfile"
+    ],
+    "notes": "Type-introspection helper exists specifically for this question."
+  },
+  {
+    "id": "transport_play",
+    "category": "waapi_action",
+    "user_query": "在 Wwise 里播放当前选中的对象试听",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "ak.wwise.core.transport"
+    ],
+    "forbidden_signals": [],
+    "notes": "Transport control — needs the transport subgroup."
+  },
+  {
+    "id": "create_event_play_action",
+    "category": "waapi_action",
+    "user_query": "为选中的 Sound 创建一个 Play Event",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "Event",
+      "Play"
+    ],
+    "forbidden_signals": [],
+    "notes": "Event creation with a Play action child."
+  },
+  {
+    "id": "set_attenuation_curve",
+    "category": "waapi_action",
+    "user_query": "把选中 Sound 的衰减曲线改成 0m 时 0dB，30m 时 -36dB 的直线",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "setAttenuationCurve"
+    ],
+    "forbidden_signals": [
+      "ak.wwise.core.object.setRTPCBinding"
+    ],
+    "notes": "Attenuation curve API — explicitly listed in system prompt as the correct alternative to wrong names."
+  },
+  {
+    "id": "rename_with_special_chars",
+    "category": "edge_case",
+    "user_query": "把选中对象重命名成 SFX_Sword/Strike #01",
+    "expected_tool": null,
+    "expected_signals": [
+      "/",
+      "#"
+    ],
+    "forbidden_signals": [],
+    "notes": "Wwise names disallow several special chars; assistant should warn / suggest sanitised name, not blindly call setName."
+  },
+  {
+    "id": "ambiguous_volume_target",
+    "category": "ambiguous",
+    "user_query": "把音量调大一点",
+    "expected_tool": null,
+    "expected_signals": [
+      "[INTENT_CLARIFY]|哪个|哪些|多少|具体|请明确|是指|调多少|目标对象|dB"
+    ],
+    "forbidden_signals": [
+      "```python_waapi"
+    ],
+    "notes": "Ambiguous target (which object? how much?) — must clarify, NOT pick a default and execute. Forbid code block (= guessed)."
+  },
+  {
+    "id": "find_unused_objects",
+    "category": "waapi_readonly",
+    "user_query": "找出工程里没有被任何 Event 引用的 Sound",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "ak.wwise.core.object.get",
+      "Sound"
+    ],
+    "forbidden_signals": [],
+    "notes": "Reverse-reference search — needs ak.wwise.core.object.get with referencesTo or a 2-pass approach."
+  },
+  {
+    "id": "music_create_segment_2025",
+    "category": "music_versioned",
+    "user_query": "在 Wwise 2025 工程里创建一个名为 Battle_Loop 的 MusicSegment（项目使用新的 Containers 层级）",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "MusicSegment",
+      "Containers|create_music_object|resolve_hierarchy_root"
+    ],
+    "forbidden_signals": [
+      "\\\\Interactive Music Hierarchy"
+    ],
+    "notes": "Wwise 2025+: music content lives under \\Containers. Hand-using Interactive Music Hierarchy is wrong here."
+  },
+  {
+    "id": "music_create_segment_legacy",
+    "category": "music_versioned",
+    "user_query": "在 Wwise 2023 工程的 Interactive Music Hierarchy/Default Work Unit 下创建 MusicSegment Battle_Loop",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "MusicSegment",
+      "Interactive Music Hierarchy|create_music_object"
+    ],
+    "forbidden_signals": [
+      "\\\\Containers\\\\Default Work Unit"
+    ],
+    "notes": "Pre-2025: legacy hierarchy. Wrong to use new Containers root."
+  },
+  {
+    "id": "music_create_cue",
+    "category": "music_versioned",
+    "user_query": "在选中的 MusicSegment 上添加一个名为 ExitCue 的 MusicCue，时间设置为 4.0 秒",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "MusicCue|create_music_cue",
+      "Cues|list"
+    ],
+    "forbidden_signals": [],
+    "notes": "MusicCue requires `list: Cues` shape — dedicated helper preferred."
+  },
+  {
+    "id": "music_resolve_root_first",
+    "category": "music_versioned",
+    "user_query": "我不知道当前工程是 Wwise 2024 还是 2025，帮我在合适的根节点下创建一个 MusicSwitchContainer 叫 CombatStates",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "MusicSwitchContainer",
+      "get_version_context|resolve_hierarchy_root"
+    ],
+    "forbidden_signals": [],
+    "notes": "Version-uncertain → must check version_context / resolve_hierarchy_root before choosing root."
+  },
+  {
+    "id": "plugin_create_meter_effect",
+    "category": "plugin",
+    "user_query": "在选中的 Bus 上添加一个 Wwise Meter 效果器",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "Meter",
+      "Effect|EffectClass|classId"
+    ],
+    "forbidden_signals": [],
+    "notes": "Plugin/effect creation — uses Effect property + ShareSet or classId pattern. Don't expect a specific procedure name."
+  },
+  {
+    "id": "plugin_set_rtpc_on_effect_param",
+    "category": "plugin",
+    "user_query": "选中的 Bus 上已经有一个 Compressor 效果器实例，把它的 Threshold 参数绑定到现有 RTPC GameVolume 上",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "Threshold",
+      "RTPC|GameVolume"
+    ],
+    "forbidden_signals": [
+      "ak.wwise.core.object.setRTPCBinding"
+    ],
+    "notes": "Effect-parameter RTPC binding — non-trivial; explicitly assumes the Compressor already exists to avoid INTENT_CLARIFY."
+  },
+  {
+    "id": "plugin_list_available",
+    "category": "plugin",
+    "user_query": "工程里能用的 Source plugin（比如 Wwise Synth One、Wwise Audio Input 之类）都有哪些？",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "PluginInfo|getInfo|getInstalled|SourcePlugin|lookup_waapi_doc|search_waapi_functions|getSchema"
+    ],
+    "forbidden_signals": [],
+    "notes": "Listing installed plugins — exact API uncertain. Accept either a real plugin-listing procedure OR a verification call (search/lookup/schema) first."
+  },
+  {
+    "id": "parallel_query_multi_objects",
+    "category": "multi_step",
+    "user_query": "同时查询当前选中对象的 Volume、Pitch 和 OutputBus 三个属性的值",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "Volume",
+      "Pitch",
+      "OutputBus",
+      "ak.wwise.core.object.get|@Volume|@Pitch|@OutputBus"
+    ],
+    "forbidden_signals": [],
+    "notes": "Should batch-query in one call (object.get with multiple @props) rather than 3 sequential calls."
+  },
+  {
+    "id": "batch_set_volumes",
+    "category": "multi_step",
+    "user_query": "把工程里所有名字以 SFX_Footstep 开头的 Sound 的 Volume 都改成 -3 dB",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "SFX_Footstep",
+      "Volume",
+      "batch_set_property|set_property|object.set"
+    ],
+    "forbidden_signals": [],
+    "notes": "Batch property write — find-then-batch-set pattern. Helper batch_set_property preferred."
+  },
+  {
+    "id": "combo_normalize_then_import_then_event",
+    "category": "combo",
+    "user_query": "把 D:/raw/explosions 里的所有 wav 归一化到 -16 LUFS，导入到选中的 Actor-Mixer 下，然后为每个新建的 Sound 创建一个 Play Event",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "normalize_audio_loudness",
+      "import_audio_files_to_selected_wwise",
+      "Event",
+      "Play"
+    ],
+    "forbidden_signals": [
+      "ak.wwise.core.audio.import"
+    ],
+    "notes": "Three-stage pipeline: normalize → import → create events. Must chain helpers, not hand-write import."
+  },
+  {
+    "id": "combo_analyze_decide_normalize",
+    "category": "combo",
+    "user_query": "先分析 D:/audio/dialogue 文件夹里所有音频的响度，把超过 -14 LUFS 的归一化到 -16 LUFS，其它保留",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "analyze_directory_loudness",
+      "normalize_audio_loudness",
+      "-14",
+      "-16"
+    ],
+    "forbidden_signals": [],
+    "notes": "Conditional pipeline: analyze → branch on threshold → normalize selectively. Tests the model's ability to chain analyze + filter + write."
+  },
+  {
+    "id": "combo_lookup_then_act",
+    "category": "combo",
+    "user_query": "用 WAAPI 把选中的 Actor-Mixer 下所有 Sound 的 LowPassFilter 设成 50（如果你不确定参数名先查一下文档）",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "lookup_waapi_doc|search_waapi_functions",
+      "LowPassFilter|LPF",
+      "set_property|object.set"
+    ],
+    "forbidden_signals": [],
+    "notes": "Self-correction + batch write. Model should look up first, then act."
+  },
+  {
+    "id": "combo_disconnected_to_concept",
+    "category": "combo",
+    "user_query": "Wwise 没连，先告诉我接下来 [REDACTED]：把选中 Actor-Mixer 下所有 Sound 的 LowPassFilter 设成 50",
+    "ctx": {
+      "waapi_connected": false
+    },
+    "expected_tool": null,
+    "expected_signals": [
+      "LowPassFilter|LPF",
+      "Connect|连接"
+    ],
+    "forbidden_signals": [
+      "ak.wwise.core.object.set",
+      "waapi_client.call"
+    ],
+    "notes": "Disconnected + conceptual mix: must explain plan WITHOUT generating live WAAPI code."
+  },
+  {
+    "id": "version_attenuation_2025_radius",
+    "category": "version_params",
+    "user_query": "在 Wwise 2025 工程里给一个 Attenuation ShareSet 设置 MaxDistance 为 30 米（Wwise 2025 的衰减距离单位与字段命名你要先确认）",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "MaxDistance|RadiusMax|radius",
+      "lookup_waapi_doc|search_waapi_functions|getPropertyAndReferenceNames"
+    ],
+    "forbidden_signals": [],
+    "notes": "Distance/radius property names changed across versions — model must look up rather than guess."
+  },
+  {
+    "id": "version_3d_spatialization_2024",
+    "category": "version_params",
+    "user_query": "在 Wwise 2024 工程里把选中 Sound 的 3D Spatialization 改成 Position + Orientation 模式",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "3DSpatialization|Spatialization|@3DPosition",
+      "set_property|object.set|setObjectProperty"
+    ],
+    "forbidden_signals": [],
+    "notes": "3D spatialization property — naming differs between authoring versions, helper preferred."
+  },
+  {
+    "id": "version_voice_volume_actor_mixer",
+    "category": "version_params",
+    "user_query": "把选中 Actor-Mixer 的 Voice Volume 设成 -3 dB，并打开 Override Parent",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "Volume",
+      "OverrideParent|@Override",
+      "set_property|object.set"
+    ],
+    "forbidden_signals": [],
+    "notes": "Property override — common 'I forgot to enable Override' bug. Must touch both Volume and OverrideParent."
+  },
+  {
+    "id": "version_music_tempo_2025",
+    "category": "version_params",
+    "user_query": "在 Wwise 2025 工程里给选中的 MusicSegment 设置节拍：Tempo 120 BPM，Time Signature 4/4",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "Tempo|@Tempo",
+      "TimeSignature|@TimeSignature|TimeSignatureUpper|TimeSignatureLower",
+      "120"
+    ],
+    "forbidden_signals": [],
+    "notes": "MusicSegment timing — separate Tempo + signature numerator/denominator props."
+  },
+  {
+    "id": "version_music_transition_rule",
+    "category": "version_params",
+    "user_query": "为 MusicSwitchContainer 添加一条 Transition Rule：从 Source A 到 Destination B 在 ExitCue 时触发",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "Transition|TransitionRule|MusicTransitionRule",
+      "ExitCue|@ExitCue|cue|Cues"
+    ],
+    "forbidden_signals": [],
+    "notes": "Transition rule list mutation — non-trivial, expect documentation lookup or structured tool."
+  },
+  {
+    "id": "version_aux_send_user_defined",
+    "category": "version_params",
+    "user_query": "给选中 Sound 添加一个 User-Defined Aux Send，发送到 ReverbBus，Send Volume = -6 dB",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "AuxSend|UserDefinedAuxSend|UserAuxSend",
+      "ReverbBus",
+      "-6"
+    ],
+    "forbidden_signals": [],
+    "notes": "Aux send setup — list-of-references property + per-entry volume."
+  },
+  {
+    "id": "version_attenuation_curve_shape_2025",
+    "category": "version_params",
+    "user_query": "把一个 Attenuation 的 OutputBusVolume 曲线改成 Logarithmic (Base 1.41) 形状",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "ak.wwise.core.object.setAttenuationCurve|setAttenuationCurve|set_attenuation_curve",
+      "Logarithmic|curveScalingType|scaling",
+      "OutputBusVolume"
+    ],
+    "forbidden_signals": [
+      "ak.wwise.core.object.setRTPCBinding"
+    ],
+    "notes": "Attenuation curve shape — uses dedicated setAttenuationCurve API; curve type enum is version-aware."
+  },
+  {
+    "id": "version_switch_container_assign_2025",
+    "category": "version_params",
+    "user_query": "为一个 SwitchContainer 配置：当 Switch 'Footstep_Surface' 为 'Concrete' 时播放选中的 Sound",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "SwitchContainer|switchcontainer_set_assignment|switchcontainer_get_assignments",
+      "Footstep_Surface|Concrete"
+    ],
+    "forbidden_signals": [],
+    "notes": "Switch container assignment — dedicated structured tool exists; should not hand-build payload."
+  },
+  {
+    "id": "selfcorrect_failed_call_lookup",
+    "category": "self_correction_chain",
+    "user_query": "我刚才让你 setRTPCBinding 失败了，报错说找不到这个 procedure。请用正确的 API 重做：把选中 Sound 的 Volume 绑定到 RTPC GameVolume",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "lookup_waapi_doc|search_waapi_functions|getSchema|get_schema|getPropertyAndReferenceNames",
+      "Volume",
+      "GameVolume"
+    ],
+    "forbidden_signals": [
+      "ak.wwise.core.object.setRTPCBinding"
+    ],
+    "notes": "After a failure, model MUST verify the correct API before retrying — never re-invoke the wrong name. Accept any verification helper."
+  },
+  {
+    "id": "selfcorrect_unknown_property_name",
+    "category": "self_correction_chain",
+    "user_query": "把选中 Sound 的 'Pitch Randomizer' 上下限改成 ±200，但我不知道这个属性在 WAAPI 里叫什么名字，你帮我查并设置",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "getPropertyAndReferenceNames|lookup_waapi_doc|search_waapi_functions|getSchema|get_schema",
+      "Pitch|RandomizerMin|RandomizerMax|@RandomizerMin"
+    ],
+    "forbidden_signals": [],
+    "notes": "Property-name discovery: model must call getPropertyAndReferenceNames or doc lookup, not guess."
+  },
+  {
+    "id": "selfcorrect_argument_shape_doubt",
+    "category": "self_correction_chain",
+    "user_query": "我想用 ak.wwise.core.audio.import 一次性导入 5 个 wav 到选中 Actor-Mixer 下，但我对 args 结构不确定。请先确认参数格式再写代码",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "lookup_waapi_doc|search_waapi_functions|getSchema|get_schema|ak.wwise.waapi.getSchema",
+      "import_audio_files_to_selected_wwise|ak.wwise.core.audio.import"
+    ],
+    "forbidden_signals": [],
+    "notes": "User explicitly says they're unsure about args — model must verify first (doc lookup or schema), not write code from memory."
+  },
+  {
+    "id": "selfcorrect_wrong_root_path",
+    "category": "self_correction_chain",
+    "user_query": "我之前用 \\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus 这个路径找不到，能不能先确认当前工程里 Bus 的根节点叫什么",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "resolve_main_bus|get_busses|resolve_hierarchy_root|Busses|Master-Mixer Hierarchy",
+      "ak.wwise.core.object.get|get_objects|get_version_context"
+    ],
+    "forbidden_signals": [],
+    "notes": "Path-not-found self-correction — should query the project rather than guess between 2025 ('\\Busses') and legacy ('\\Master-Mixer Hierarchy')."
+  },
+  {
+    "id": "selfcorrect_after_schema_error",
+    "category": "self_correction_chain",
+    "user_query": "上次这段代码报错 'Argument objects/0/OverrideColor is unknown'：我想给选中对象设置 OverrideColor 和 Color 两个属性。请改正",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "getPropertyAndReferenceNames|lookup_waapi_doc|getSchema|get_schema",
+      "Color|OverrideColor|@Color|@OverrideColor"
+    ],
+    "forbidden_signals": [],
+    "notes": "Real Wwise schema error from logs — Override flags are properties (e.g. @OverrideColor) not top-level fields. Model should validate via getPropertyAndReferenceNames first."
+  },
+  {
+    "id": "selfcorrect_missing_dependency",
+    "category": "self_correction_chain",
+    "user_query": "我让你给 Sound 设置 State Group 'Combat'，但你说的 ak.wwise.core.object.setStateGroups 报错 'StateGroup not found'，请处理",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "ak.wwise.core.object.get|search_waapi_functions",
+      "Combat|StateGroup"
+    ],
+    "forbidden_signals": [
+      "ak.wwise.core.object.addStateGroup"
+    ],
+    "notes": "Missing prerequisite — should query whether the StateGroup exists, optionally create it, then bind. Must not invent the wrong addStateGroup API."
+  },
+  {
+    "id": "pipeline_sfx_full_implementation",
+    "category": "full_pipeline",
+    "user_query": "把 D:/render/footsteps 文件夹里的 wav 全部导入 Wwise：先归一化到 -16 LUFS，导入到选中的 Actor-Mixer 下，每 4 个同类打包成一个 Random Container，给每个 Container 建一个 Play Event，最后生成 SoundBank",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "normalize_audio_loudness",
+      "import_audio_files_to_selected_wwise|ak.wwise.core.audio.import",
+      "Random Container"
+    ],
+    "forbidden_signals": [],
+    "notes": "FIRST-STEP scoring (5-stage pipeline, model may split into steps). Pass if it begins the chain correctly: normalize + import + the Random-Container grouping intent. NOTE: import helper only targets the current selection, so importing into per-batch new Containers may legitimately use raw ak.wwise.core.audio.import. Later stages (events / soundbank) are follow-up steps."
+  },
+  {
+    "id": "pipeline_loudness_audit_and_fix",
+    "category": "full_pipeline",
+    "user_query": "审计整个工程所有 source 文件的响度，把超过 -12 LUFS 的找出来，归一化到 -16 LUFS，重新导入覆盖，然后输出一份处理报告（哪些改了、改前改后的值）",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "analyze_project_source_files_loudness|analyze_directory_loudness|get_project_source_files",
+      "-12"
+    ],
+    "forbidden_signals": [],
+    "notes": "FIRST-STEP scoring (large task → model legitimately splits into steps; runner sends one turn). Pass if step 1 starts the project-wide audit with the right loudness helper and the -12 threshold. Later stages (normalize/-16/re-import/report) are follow-up steps not required in the first turn."
+  },
+  {
+    "id": "pipeline_footstep_switch_system",
+    "category": "full_pipeline",
+    "user_query": "搭一套脚步声系统：创建 Switch Group 'Footstep_Surface' 含 Concrete/Grass/Wood 三个 Switch，建一个 Switch Container，把选中的三组 Sound 分别分配到对应 Switch，再创建一个 Footstep Play Event",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "Switch Group|SwitchGroup|switch_group",
+      "Concrete",
+      "SwitchContainer|Switch Container"
+    ],
+    "forbidden_signals": [],
+    "notes": "FIRST-STEP scoring. Pass if it starts building the switch system (switch group + container, with the Concrete switch named). Per-switch assignment + event are follow-up steps."
+  },
+  {
+    "id": "pipeline_adaptive_music_setup",
+    "category": "full_pipeline",
+    "user_query": "搭一个简单的战斗音乐系统：在合适的根节点下创建 Music Switch Container 'CombatMusic'，加 Explore 和 Battle 两个 Music Segment，给每段设 Tempo 120 BPM，配置 State Group 驱动切换，加 ExitCue 过渡",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "resolve_hierarchy_root|get_version_context|Containers|Interactive Music Hierarchy",
+      "MusicSwitchContainer|Music Switch Container"
+    ],
+    "forbidden_signals": [],
+    "notes": "FIRST-STEP scoring (largest music chain). Pass if it resolves the version-aware root first and creates the Music Switch Container. Segments / tempo / state transitions / cues are follow-up steps."
+  },
+  {
+    "id": "pipeline_bus_routing_restructure",
+    "category": "full_pipeline",
+    "user_query": "重构总线结构：在主总线下建 SFX、Music、Voice 三个子 Bus，给 SFX Bus 挂一个 Compressor，把工程里所有 Sound SFX 路由到 SFX Bus，所有 Voice 类对象路由到 Voice Bus，最后保存工程",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "resolve_main_bus|get_busses|create_bus|Master Audio Bus|Main Audio Bus"
+    ],
+    "forbidden_signals": [
+      "ak.wwise.core.object.setRTPCBinding"
+    ],
+    "notes": "FIRST-STEP scoring (large task → model legitimately resolves the real bus root first, then continues in follow-up steps). Pass if step 1 resolves the main bus / existing busses instead of hard-coding a path, and never uses the wrong setRTPCBinding API. Later stages (create 3 buses / effect / re-route / save) are follow-up steps."
+  },
+  {
+    "id": "pipeline_reaper_to_wwise_handoff",
+    "category": "full_pipeline",
+    "user_query": "我在 REAPER 里渲染好的对白文件在 D:/reaper_render/dialogue，帮我检查响度是否达标（目标 -19 LUFS ±1），不达标的归一化，然后导入 Wwise 选中的 Voice Actor-Mixer 下，建立对应的对白 Event",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "analyze_directory_loudness|analyze_audio_file",
+      "-19"
+    ],
+    "forbidden_signals": [
+      "ak.wwise.core.audio.import"
+    ],
+    "notes": "FIRST-STEP scoring (cross-tool REAPER→Wwise handoff). Pass if step 1 starts the loudness check with the -19 LUFS target. Conditional normalize / import / events are follow-up steps. Import must use the helper, never raw ak.wwise.core.audio.import."
+  },
+  {
+    "id": "pipeline_project_cleanup_audit",
+    "category": "full_pipeline",
+    "user_query": "帮我做一次工程清理审计：找出没有被任何 Event 引用的 Sound、空的 Container、以及 source 文件缺失的对象，列成一份报告，先不要删，让我确认",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "ak.wwise.core.object.get|get_objects",
+      "Event",
+      "Container",
+      "report|报告|results"
+    ],
+    "forbidden_signals": [
+      "ak.wwise.core.object.delete"
+    ],
+    "notes": "Read-only audit (3 checks: unreferenced sounds, empty containers, missing sources) → report, NO destructive action. Must NOT delete — user explicitly said confirm first."
+  },
+  {
+    "id": "delegate_codex_website",
+    "category": "external_agent",
+    "user_query": "和 codex 对话继续完善我的网站，加一个深色模式切换",
+    "expected_tool": null,
+    "expected_signals": [
+      "dispatch_codex_agent|external_agent.codex|dispatch_sub_pet|[INTENT_CLARIFY]|目录|路径|哪个"
+    ],
+    "forbidden_signals": [
+      "ak.wwise.core.object",
+      "waapi_client.call"
+    ],
+    "notes": "Delegation to Codex. The DETERMINISTIC router (ExternalAgentRouter) handles this before the model in the real app — it dispatches straight to Codex. This golden case is the prompt-level second line of defense: the model must EITHER dispatch via dispatch_codex_agent OR ask for the project path — but must NEVER write the website/WAAPI code itself."
+  },
+  {
+    "id": "delegate_claude_code_review",
+    "category": "external_agent",
+    "user_query": "让 claude code 帮我审查一下这个仓库的代码质量",
+    "expected_tool": "waapi_python_exec",
+    "expected_signals": [
+      "dispatch_claude_code_agent|external_agent.claude_code|dispatch_sub_pet"
+    ],
+    "forbidden_signals": [
+      "ak.wwise.core.object"
+    ],
+    "notes": "Delegation to Claude Code CLI for codebase review — must dispatch, not self-implement."
+  }
+]

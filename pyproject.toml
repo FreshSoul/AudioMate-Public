@@ -1,0 +1,24 @@
+[tool.pytest.ini_options]
+testpaths = ["src/test"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::PendingDeprecationWarning",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+extend-exclude = [
+    "build",
+    "dist",
+    "**/__pycache__",
+    "src/llm/waapi_docs",
+]
+
+[tool.ruff.lint]
+# Conservative defaults: flag real bugs only, not style preferences. The
+# codebase includes a large legacy GUI surface; enable more rules gradually.
+select = ["E9", "F63", "F7", "F82"]

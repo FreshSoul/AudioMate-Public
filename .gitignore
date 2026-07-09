@@ -1,0 +1,70 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+tmp/
+
+# Build outputs
+build/
+dist/
+runtime/reaper-python/
+*.spec.user
+*.egg-info/
+
+# Local application data
+settings.json
+audio_rules.json
+buddy_state.json
+scheduled_tasks.json
+test_res.json
+chats/
+knowledge/
+logs/
+memory/
+reports/
+src/llm/waapi_docs/_embeddings.json
+
+# Local state / logs / config (defensive wildcards for a public repo)
+*.log
+*_state.json
+*.local.json
+
+# Local databases
+*.sqlite
+*.sqlite3
+*.db
+
+# Local extension installs
+skills/
+
+# Local assistant/worktree data
+.claude/
+
+# Node / web artifacts
+node_modules/
+web/*/node_modules/
+web/*/dist/
+web/*/.env
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Secrets
+.env
+.env.*
+*.pem
+*.key

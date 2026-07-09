@@ -1,0 +1,20 @@
+waapi-client
+PyQt6
+PyQt6-WebEngine
+openai
+anthropic
+mcp
+beautifulsoup4
+python-dotenv
+keyring
+PyPDF2
+python-docx
+pyloudnorm
+librosa
+soundfile
+python-reapy>=0.10.0
+openpyxl
+python-pptx
+pandas
+chardet
+pywin32; platform_system == "Windows"
