@@ -6,7 +6,7 @@ AudioMate 是一款面向游戏音频工作流的桌面 AI 助手，核心围绕
 
 ## 核心能力
 
-- 通过 WAAPI 查询、检查和修改 Wwise 工程，质检工程，基层搭建。
+- 以Wwise工程为中心进行工程查询、检查和修改 Wwise 工程，质检工程，基层搭建，同时与办公场景结合。
 - 分析音频的响度、时长、源文件数据、文件结构和常见质量风险。
 - 使用 Ask Mode 做只读分析，使用 Agent Mode 执行经过确认的工程或文件改动。
 - 从文本、Markdown、PDF、Word、Excel、PowerPoint 和 CSV 构建项目知识库。
