@@ -3,6 +3,7 @@
 AudioMate 是一款面向游戏音频工作流的桌面 AI 助手，核心围绕 Audiokinetic Wwise 展开。它把自然语言规划、WAAPI 操作、本地知识库、可复用 Skills、可执行 Plugins、MCP 工具以及可选的 REAPER 自动化连接在一起。
 
 这个仓库是开源桌面应用本体。扩展分发采用本地优先模式：通过文件夹、压缩包或版本化的 Plugin/Skill 包共享，不依赖托管市场服务。
+[新手教程](docs/新手教程.md)
 
 ## 核心能力
 
